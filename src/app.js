@@ -1,13 +1,23 @@
 const express = require("express");
-const { uuid, isUuid } = require('uuidv4');
 const cors = require("cors");
 
-// const { uuid } = require("uuidv4");
+const { uuid, isUuid } = require("uuidv4");
 
 const app = express();
 
+function validateRepositoryId(request, response, next) {
+  const { id } = request.params;
+
+  if (!isUuid(id)) {
+      return response.status(400).json({"message": "Invalid Repository id"});
+  }
+
+  return next();
+}
+
 app.use(express.json());
 app.use(cors());
+app.use('/repositories/:id', validateRepositoryId);
 
 const repositories = [];
 
